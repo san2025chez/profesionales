@@ -28,11 +28,11 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
   const premiumWhatsapp = professional.link_whatsapp || whatsappLink;
   const socialLinks = (professional.redes_sociales ?? "")
     .split(",")
-    .map((value) => value.trim())
+    .map((value: string) => value.trim())
     .filter(Boolean);
   const galleryImages = (professional.gallery_images ?? "")
     .split("\n")
-    .map((value) => value.trim())
+    .map((value: string) => value.trim())
     .filter(Boolean);
 
   return (
