@@ -36,20 +36,10 @@ export default async function Home({ searchParams }: HomePageProps) {
               contacto directo con los profesionales que necesitas.
             </p>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/register"
-              className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
-            >
-              Crear cuenta
-            </Link>
-            <Link
-              href="/login"
-              className="rounded-full border border-slate-600/80 px-5 py-2 text-sm font-semibold text-slate-200 transition hover:border-primary/60 hover:text-white"
-            >
-              Iniciar sesión
-            </Link>
-          </div>
+          <p className="text-sm text-slate-400">
+            Regístrate o inicia sesión desde la barra superior para publicar tu
+            perfil.
+          </p>
         </header>
 
         {error ? (

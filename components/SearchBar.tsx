@@ -15,6 +15,16 @@ export default function SearchBar({ value, onChange }: SearchBarProps) {
         placeholder="Nombre del profesional"
         className="w-full bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none"
       />
+      {value ? (
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          className="rounded-full border border-slate-600/80 px-2 py-1 text-xs text-slate-200 transition hover:border-primary/60"
+          aria-label="Limpiar búsqueda"
+        >
+          ×
+        </button>
+      ) : null}
     </label>
   );
 }
