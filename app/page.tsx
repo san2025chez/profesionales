@@ -19,11 +19,18 @@ export default async function Home({ searchParams }: HomePageProps) {
     .order("is_featured", { ascending: false })
     .order("name", { ascending: true });
 
-  const resolvedSearchParams = searchParams ? await searchParams : undefined;
-  const initialCategory = resolvedSearchParams?.category ?? "Todas";
-  const initialQuery = resolvedSearchParams?.q ?? "";
-  const initialProvince = resolvedSearchParams?.province ?? "Todas";
-  const initialLocality = resolvedSearchParams?.locality ?? "Todas";
+  const resolvedSearchParams = (searchParams
+    ? await searchParams
+    : {}) as {
+    category?: string;
+    q?: string;
+    province?: string;
+    locality?: string;
+  };
+  const initialCategory = resolvedSearchParams.category ?? "Todas";
+  const initialQuery = resolvedSearchParams.q ?? "";
+  const initialProvince = resolvedSearchParams.province ?? "Todas";
+  const initialLocality = resolvedSearchParams.locality ?? "Todas";
 
   return (
     <main className="min-h-screen bg-base px-6 py-10 text-white">
