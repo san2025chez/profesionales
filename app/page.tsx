@@ -3,7 +3,12 @@ import { createSupabaseServerClient } from "@/lib/supabase-server";
 import ProfessionalsGrid from "@/components/ProfessionalsGrid";
 
 type HomePageProps = {
-  searchParams?: Promise<{ category?: string; q?: string }>;
+  searchParams?: Promise<{
+    category?: string;
+    q?: string;
+    province?: string;
+    locality?: string;
+  }>;
 };
 
 export default async function Home({ searchParams }: HomePageProps) {
