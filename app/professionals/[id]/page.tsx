@@ -12,7 +12,7 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
   const { data: professional, error } = await supabase
     .from("professionals")
     .select(
-      "id, name, category, description, image_url, location, contact"
+      "id, name, category, description, image_url, location, contact, province, locality, country, plan, link_whatsapp, redes_sociales, gallery_images"
     )
     .eq("id", resolvedParams.id)
     .maybeSingle();
@@ -24,6 +24,16 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
   const rawContact = professional.contact ?? "";
   const phoneDigits = rawContact.replace(/[^\d]/g, "");
   const whatsappLink = phoneDigits ? `https://wa.me/${phoneDigits}` : null;
+  const isPremium = professional.plan === "premium";
+  const premiumWhatsapp = professional.link_whatsapp || whatsappLink;
+  const socialLinks = (professional.redes_sociales ?? "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+  const galleryImages = (professional.gallery_images ?? "")
+    .split("\n")
+    .map((value) => value.trim())
+    .filter(Boolean);
 
   return (
     <main className="min-h-screen bg-base px-6 py-12 text-white">
@@ -56,6 +66,11 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
                 {professional.category}
               </p>
               <h1 className="text-3xl font-semibold">{professional.name}</h1>
+              {isPremium ? (
+                <span className="inline-flex w-fit rounded-full bg-accent/20 px-3 py-1 text-xs font-semibold text-accent">
+                  Premium
+                </span>
+              ) : null}
               {professional.location ? (
                 <p className="text-sm text-slate-400">
                   {professional.location}
@@ -68,9 +83,9 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
                 <span className="rounded-full border border-slate-700/60 bg-slate-900/60 px-4 py-2">
                   {rawContact}
                 </span>
-                {whatsappLink ? (
+                {isPremium && premiumWhatsapp ? (
                   <a
-                    href={whatsappLink}
+                    href={premiumWhatsapp}
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-xs font-semibold text-slate-900 transition hover:bg-accent/90"
@@ -89,25 +104,47 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
               </div>
             ) : null}
             <div className="flex flex-wrap gap-3">
-              {professional.contact ? (
-                <a
-                  href={
-                    professional.contact.startsWith("http")
-                      ? professional.contact
-                      : `mailto:${professional.contact}`
-                  }
-                  className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
-                >
-                  Contactar
-                </a>
-              ) : null}
               <Link
                 href="/register"
-                className="rounded-full border border-slate-600/80 px-5 py-2 text-sm font-semibold text-slate-200 transition hover:border-primary/60 hover:text-white"
+                className="rounded-full border border-slate-600/80 px-5 py-2 text-xs font-semibold text-slate-200 transition hover:border-primary/60 hover:text-white"
               >
                 Publicar perfil
               </Link>
             </div>
+
+            {isPremium && socialLinks.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {socialLinks.map((link) => (
+                  <a
+                    key={link}
+                    href={link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-full border border-slate-700/60 bg-slate-900/60 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:border-primary/60"
+                  >
+                    {link.replace(/^https?:\/\//, "")}
+                  </a>
+                ))}
+              </div>
+            ) : null}
+
+            {isPremium && galleryImages.length > 0 ? (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {galleryImages.map((src) => (
+                  <div
+                    key={src}
+                    className="h-40 overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-800"
+                  >
+                    <img
+                      src={src}
+                      alt="Galería profesional"
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
         </section>
       </div>

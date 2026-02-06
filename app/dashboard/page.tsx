@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { directoryCategories } from "@/lib/categories";
+import { JUJUY_LOCALITIES, JUJUY_PROVINCE } from "@/lib/locations-jujuy";
+import ImageUploader from "@/components/ImageUploader";
+import PlanFields from "@/components/PlanFields";
 import { createSubscription, upsertProfessional } from "./actions";
 import SignOutButton from "@/components/SignOutButton";
 
@@ -21,7 +25,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const { data: professional } = await supabase
     .from("professionals")
     .select(
-      "name, category, description, image_url, location, contact, subscription_status, subscription_end, is_featured"
+      "name, category, description, image_url, location, contact, subscription_status, subscription_end, is_featured, country, province, locality, plan, link_whatsapp, redes_sociales, gallery_images"
     )
     .eq("user_id", user.id)
     .maybeSingle();
@@ -67,37 +71,32 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           </div>
         ) : null}
 
-        <section className="rounded-3xl border border-slate-700/60 bg-card/70 p-6 shadow-xl shadow-slate-950/30">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-accent">
-                Plan mensual
-              </p>
-              <h2 className="text-xl font-semibold">Destacado mensual</h2>
-              <p className="text-sm text-slate-300">
-                Primer mes gratis. Luego $2000 ARS por mes.
-              </p>
-              {professional?.subscription_status ? (
-                <p className="mt-2 text-xs text-slate-400">
-                  Estado actual: {professional.subscription_status}
-                </p>
-              ) : null}
-            </div>
-            <form action={createSubscription}>
-              <button
-                type="submit"
-                className="rounded-2xl bg-accent px-6 py-3 text-xs font-semibold text-slate-900 transition hover:bg-accent/90"
-              >
-                Activar plan
-              </button>
-            </form>
-          </div>
-        </section>
+        <div className="flex flex-wrap items-center gap-3">
+          <form action={createSubscription}>
+            <button
+              type="submit"
+              className="rounded-2xl bg-accent px-6 py-3 text-xs font-semibold text-slate-900 transition hover:bg-accent/90"
+            >
+              Activar plan premium
+            </button>
+          </form>
+          {professional?.subscription_status ? (
+            <span className="text-xs text-slate-400">
+              Estado actual: {professional.subscription_status}
+            </span>
+          ) : null}
+        </div>
 
         <form
           action={upsertProfessional}
           className="grid gap-6 rounded-3xl border border-slate-700/60 bg-card/80 p-8 shadow-xl shadow-slate-950/30"
         >
+          <PlanFields
+            defaultPlan={professional?.plan ?? "free"}
+            defaultWhatsapp={professional?.link_whatsapp ?? null}
+            defaultSocialLinks={professional?.redes_sociales ?? null}
+            defaultGallery={professional?.gallery_images ?? null}
+          />
           <div className="grid gap-2">
             <label className="text-sm text-slate-200">Nombre *</label>
             <input
@@ -109,13 +108,21 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           </div>
           <div className="grid gap-2">
             <label className="text-sm text-slate-200">Categoría *</label>
-            <input
+            <select
               name="category"
               required
               defaultValue={professional?.category ?? ""}
-              placeholder="Ej: Diseño UX, Desarrollo Web"
               className="rounded-2xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-primary/70 focus:outline-none"
-            />
+            >
+              <option value="">Seleccionar categoría</option>
+              {directoryCategories.flatMap((group) =>
+                group.items.map((item) => (
+                  <option key={`${group.label}-${item}`} value={item}>
+                    {item}
+                  </option>
+                ))
+              )}
+            </select>
           </div>
           <div className="grid gap-2">
             <label className="text-sm text-slate-200">Descripción *</label>
@@ -129,22 +136,44 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
             />
           </div>
           <div className="grid gap-2">
-            <label className="text-sm text-slate-200">Imagen (URL)</label>
+            <label className="text-sm text-slate-200">Imagen</label>
+            <ImageUploader
+              userId={user.id}
+              initialUrl={professional?.image_url ?? null}
+            />
+          </div>
+          <div className="grid gap-2">
+            <label className="text-sm text-slate-200">País</label>
             <input
-              name="image_url"
-              defaultValue={professional?.image_url ?? ""}
-              placeholder="https://..."
+              name="country"
+              defaultValue={professional?.country ?? "Argentina"}
               className="rounded-2xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-primary/70 focus:outline-none"
             />
           </div>
           <div className="grid gap-2">
-            <label className="text-sm text-slate-200">Ubicación</label>
-            <input
-              name="location"
-              defaultValue={professional?.location ?? ""}
-              placeholder="Ciudad, País"
+            <label className="text-sm text-slate-200">Provincia</label>
+            <select
+              name="province"
+              defaultValue={professional?.province ?? JUJUY_PROVINCE}
               className="rounded-2xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-primary/70 focus:outline-none"
-            />
+            >
+              <option value={JUJUY_PROVINCE}>{JUJUY_PROVINCE}</option>
+            </select>
+          </div>
+          <div className="grid gap-2">
+            <label className="text-sm text-slate-200">Localidad</label>
+            <select
+              name="locality"
+              defaultValue={professional?.locality ?? ""}
+              className="rounded-2xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-primary/70 focus:outline-none"
+            >
+              <option value="">Seleccionar localidad</option>
+              {JUJUY_LOCALITIES.map((locality) => (
+                <option key={locality} value={locality}>
+                  {locality}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="grid gap-2">
             <label className="text-sm text-slate-200">

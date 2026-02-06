@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
-import { directoryCategories } from "@/lib/categories";
 import SignOutButton from "./SignOutButton";
+import NavbarMenu from "./NavbarMenu";
 
 export default async function Navbar() {
   const supabase = await createSupabaseServerClient();
@@ -22,36 +22,7 @@ export default async function Navbar() {
         </div>
 
         <div className="flex flex-1 flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <details className="group relative rounded-full border border-slate-700/70 bg-slate-900/60 px-4 py-2 text-sm text-slate-200">
-            <summary className="cursor-pointer list-none font-semibold">
-              Categorías
-            </summary>
-            <div className="absolute left-0 mt-3 w-[min(760px,90vw)] rounded-2xl border border-slate-800 bg-slate-900/95 p-4 shadow-xl shadow-slate-950/40">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {directoryCategories.map((category) => (
-                  <div key={category.label} className="space-y-2">
-                    <Link
-                      href={`/?category=${encodeURIComponent(category.label)}`}
-                      className="block text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 transition hover:text-white"
-                    >
-                      {category.label}
-                    </Link>
-                    <div className="space-y-1">
-                      {category.items.map((item) => (
-                        <Link
-                          key={item}
-                          href={`/?q=${encodeURIComponent(item)}`}
-                          className="block rounded-xl px-3 py-2 text-xs text-slate-300 transition hover:bg-slate-800/70 hover:text-white"
-                        >
-                          {item}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </details>
+          <NavbarMenu />
 
           <div className="flex items-center gap-2 text-sm text-slate-200">
             {user ? (

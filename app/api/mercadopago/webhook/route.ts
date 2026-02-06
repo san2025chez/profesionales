@@ -29,6 +29,7 @@ export async function POST(request: Request) {
       subscription_status: status,
       subscription_end: nextPaymentDate,
       is_featured: isFeatured,
+      plan: isFeatured ? "premium" : "free",
     })
     .eq("mp_preapproval_id", preapprovalId);
 

@@ -10,13 +10,15 @@ export default async function Home({ searchParams }: HomePageProps) {
   const supabase = await createSupabaseServerClient();
   const { data: professionals, error } = await supabase
     .from("professionals")
-    .select("id, name, category, description, image_url, location")
+    .select("id, name, category, description, image_url, location, province, locality")
     .order("is_featured", { ascending: false })
     .order("name", { ascending: true });
 
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const initialCategory = resolvedSearchParams?.category ?? "Todas";
   const initialQuery = resolvedSearchParams?.q ?? "";
+  const initialProvince = resolvedSearchParams?.province ?? "Todas";
+  const initialLocality = resolvedSearchParams?.locality ?? "Todas";
 
   return (
     <main className="min-h-screen bg-base px-6 py-10 text-white">
@@ -59,6 +61,8 @@ export default async function Home({ searchParams }: HomePageProps) {
             professionals={professionals ?? []}
             initialCategory={initialCategory}
             initialQuery={initialQuery}
+            initialProvince={initialProvince}
+            initialLocality={initialLocality}
           />
         )}
       </div>

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import CategoryFilter from "./CategoryFilter";
 import ProfessionalCard from "./ProfessionalCard";
 import SearchBar from "./SearchBar";
+import { JUJUY_LOCALITIES, JUJUY_PROVINCE } from "@/lib/locations-jujuy";
 
 export type Professional = {
   id: string;
@@ -12,21 +13,35 @@ export type Professional = {
   description: string;
   image_url?: string | null;
   location?: string | null;
+  province?: string | null;
+  locality?: string | null;
 };
 
 type ProfessionalsGridProps = {
   professionals: Professional[];
   initialCategory?: string;
   initialQuery?: string;
+  initialProvince?: string;
+  initialLocality?: string;
 };
 
 export default function ProfessionalsGrid({
   professionals,
   initialCategory = "Todas",
   initialQuery = "",
+  initialProvince = "Todas",
+  initialLocality = "Todas",
 }: ProfessionalsGridProps) {
   const [query, setQuery] = useState(initialQuery);
   const [category, setCategory] = useState(initialCategory);
+  const [province, setProvince] = useState(initialProvince);
+  const [locality, setLocality] = useState(initialLocality);
+
+  const normalizeText = (value: string) =>
+    value
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
 
   const categories = useMemo(
     () =>
@@ -37,27 +52,66 @@ export default function ProfessionalsGrid({
   );
 
   const filtered = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
+    const normalizedQuery = normalizeText(query.trim());
+    const normalizedCategory = normalizeText(category);
+    const categoryToken =
+      normalizedCategory === "todas"
+        ? ""
+        : normalizedCategory.split(" ")[0].slice(0, 7);
     return professionals.filter((professional) => {
+      const normalizedName = normalizeText(professional.name);
+      const normalizedCategoryValue = normalizeText(professional.category);
+      const normalizedDescription = normalizeText(professional.description);
       const matchesCategory =
-        category === "Todas" || professional.category === category;
+        category === "Todas" ||
+        (categoryToken.length > 0 &&
+          (normalizedCategoryValue.includes(categoryToken) ||
+            normalizedName.includes(categoryToken) ||
+            normalizedDescription.includes(categoryToken)));
+      const matchesProvince =
+        province === "Todas" || professional.province === province;
+      const matchesLocality =
+        locality === "Todas" || professional.locality === locality;
       const matchesQuery =
         normalizedQuery.length === 0 ||
-        professional.name.toLowerCase().includes(normalizedQuery) ||
-        professional.category.toLowerCase().includes(normalizedQuery);
-      return matchesCategory && matchesQuery;
+        normalizedName.includes(normalizedQuery) ||
+        normalizedCategoryValue.includes(normalizedQuery) ||
+        normalizedDescription.includes(normalizedQuery);
+      return matchesCategory && matchesProvince && matchesLocality && matchesQuery;
     });
-  }, [professionals, query, category]);
+  }, [professionals, query, category, province, locality]);
 
   return (
     <section className="space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <SearchBar value={query} onChange={setQuery} />
-        <CategoryFilter
-          categories={categories}
-          selected={category}
-          onChange={setCategory}
-        />
+        <div className="flex flex-wrap gap-3">
+          <select
+            value={province}
+            onChange={(event) => setProvince(event.target.value)}
+            className="rounded-full border border-slate-700/60 bg-slate-900/60 px-4 py-2 text-xs font-semibold text-slate-200 transition focus:border-primary/60 focus:outline-none"
+          >
+            <option value="Todas">Todas las provincias</option>
+            <option value={JUJUY_PROVINCE}>{JUJUY_PROVINCE}</option>
+          </select>
+          <select
+            value={locality}
+            onChange={(event) => setLocality(event.target.value)}
+            className="rounded-full border border-slate-700/60 bg-slate-900/60 px-4 py-2 text-xs font-semibold text-slate-200 transition focus:border-primary/60 focus:outline-none"
+          >
+            <option value="Todas">Todas las localidades</option>
+            {JUJUY_LOCALITIES.map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+          <CategoryFilter
+            categories={categories}
+            selected={category}
+            onChange={setCategory}
+          />
+        </div>
       </div>
 
       {filtered.length === 0 ? (
