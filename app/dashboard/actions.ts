@@ -28,6 +28,7 @@ export async function upsertProfessional(formData: FormData) {
   const link_whatsapp = String(formData.get("link_whatsapp") ?? "").trim();
   const redes_sociales = String(formData.get("redes_sociales") ?? "").trim();
   const gallery_images = String(formData.get("gallery_images") ?? "").trim();
+  const license_number = String(formData.get("license_number") ?? "").trim();
 
   const allowedCategories = new Set(
     directoryCategories.flatMap((group) => group.items)
@@ -71,10 +72,12 @@ export async function upsertProfessional(formData: FormData) {
     payload.link_whatsapp = link_whatsapp || null;
     payload.redes_sociales = redes_sociales || null;
     payload.gallery_images = gallery_images || null;
+    payload.license_number = license_number || null;
   } else {
     payload.link_whatsapp = null;
     payload.redes_sociales = null;
     payload.gallery_images = null;
+    payload.license_number = null;
   }
 
   const { error } = await supabase

@@ -25,7 +25,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const { data: professional } = await supabase
     .from("professionals")
     .select(
-      "name, category, description, image_url, location, contact, subscription_status, subscription_end, is_featured, country, province, locality, plan, link_whatsapp, redes_sociales, gallery_images"
+      "name, category, description, image_url, location, contact, subscription_status, subscription_end, is_featured, country, province, locality, plan, link_whatsapp, redes_sociales, gallery_images, license_number"
     )
     .eq("user_id", user.id)
     .maybeSingle();
@@ -96,6 +96,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
             defaultWhatsapp={professional?.link_whatsapp ?? null}
             defaultSocialLinks={professional?.redes_sociales ?? null}
             defaultGallery={professional?.gallery_images ?? null}
+            defaultLicense={professional?.license_number ?? null}
           />
           <div className="grid gap-2">
             <label className="text-sm text-slate-200">Nombre *</label>

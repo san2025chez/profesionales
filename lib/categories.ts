@@ -52,7 +52,6 @@ export const directoryCategories = [
     items: [
       "Albañil",
       "Arquitecto",
-      "Colocación de durlock",
       "Carpintero",
       "Cerrajero",
       "Electricista",

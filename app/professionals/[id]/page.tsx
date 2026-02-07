@@ -12,7 +12,7 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
   const { data: professional, error } = await supabase
     .from("professionals")
     .select(
-      "id, name, category, description, image_url, location, contact, province, locality, country, plan, link_whatsapp, redes_sociales, gallery_images"
+      "id, name, category, description, image_url, location, contact, province, locality, country, plan, link_whatsapp, redes_sociales, gallery_images, license_number"
     )
     .eq("id", resolvedParams.id)
     .maybeSingle();
@@ -78,6 +78,11 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
               ) : null}
             </div>
             <p className="text-sm text-slate-300">{professional.description}</p>
+            {professional.license_number ? (
+              <p className="text-xs text-slate-400">
+                Matrícula: {professional.license_number}
+              </p>
+            ) : null}
             {rawContact ? (
               <div className="flex flex-wrap items-center gap-3 text-sm text-slate-200">
                 <span className="rounded-full border border-slate-700/60 bg-slate-900/60 px-4 py-2">

@@ -7,6 +7,7 @@ type PlanFieldsProps = {
   defaultWhatsapp?: string | null;
   defaultSocialLinks?: string | null;
   defaultGallery?: string | null;
+  defaultLicense?: string | null;
 };
 
 export default function PlanFields({
@@ -14,6 +15,7 @@ export default function PlanFields({
   defaultWhatsapp,
   defaultSocialLinks,
   defaultGallery,
+  defaultLicense,
 }: PlanFieldsProps) {
   const [plan, setPlan] = useState<"free" | "premium">(defaultPlan);
   const isPremium = plan === "premium";
@@ -105,6 +107,17 @@ export default function PlanFields({
             className="rounded-2xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-primary/70 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
           />
         </div>
+      </div>
+
+      <div className="grid gap-2">
+        <label className="text-sm text-slate-200">Matrícula profesional</label>
+        <input
+          name="license_number"
+          defaultValue={defaultLicense ?? ""}
+          disabled={!isPremium}
+          placeholder="Ej: MP 12345"
+          className="rounded-2xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-primary/70 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+        />
       </div>
 
       <div className="grid gap-2">

@@ -8,6 +8,14 @@ export default async function Navbar() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const { data: roleRow } = user
+    ? await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .maybeSingle()
+    : { data: null };
+  const isAdmin = roleRow?.role === "admin";
 
   return (
     <nav className="sticky top-0 z-50 border-b border-slate-800/70 bg-base/90 backdrop-blur">
@@ -33,6 +41,14 @@ export default async function Navbar() {
                 >
                   Mi panel
                 </Link>
+                {isAdmin ? (
+                  <Link
+                    href="/admin"
+                    className="rounded-full border border-accent/60 px-4 py-2 text-xs font-semibold text-accent transition hover:border-accent/80"
+                  >
+                    Admin
+                  </Link>
+                ) : null}
                 <SignOutButton />
               </>
             ) : (
