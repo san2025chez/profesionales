@@ -21,9 +21,14 @@ export default function RegisterPage() {
     const password = String(formData.get("password") ?? "");
 
     const supabase = createSupabaseBrowserClient();
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
     const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: `${siteUrl}/login`,
+      },
     });
 
     if (signUpError) {
