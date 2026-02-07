@@ -130,7 +130,7 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
 
             {isPremium && galleryImages.length > 0 ? (
               <div className="grid gap-3 sm:grid-cols-2">
-                {galleryImages.map((src) => (
+                {galleryImages.map((src: string) => (
                   <div
                     key={src}
                     className="h-40 overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-800"
