@@ -114,7 +114,7 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
 
             {isPremium && socialLinks.length > 0 ? (
               <div className="flex flex-wrap gap-2">
-                {socialLinks.map((link) => (
+                {socialLinks.map((link: string) => (
                   <a
                     key={link}
                     href={link}
