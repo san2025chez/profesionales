@@ -9,6 +9,9 @@ type ProfessionalCardProps = {
   description: string;
   imageUrl?: string | null;
   location?: string | null;
+  plan?: string | null;
+  licenseNumber?: string | null;
+  isFeatured?: boolean | null;
 };
 
 export default function ProfessionalCard({
@@ -18,9 +21,19 @@ export default function ProfessionalCard({
   description,
   imageUrl,
   location,
+  plan,
+  licenseNumber,
+  isFeatured,
 }: ProfessionalCardProps) {
+  const isPremium = plan === "premium" || isFeatured;
+  const hasLicense = licenseNumber && licenseNumber.trim() !== "";
+
   return (
-    <article className="group rounded-2xl border border-slate-700/60 bg-card/90 p-5 shadow-lg shadow-slate-950/20 transition hover:-translate-y-1 hover:border-primary/60">
+    <article className={`group rounded-2xl border p-5 shadow-lg transition hover:-translate-y-1 ${
+      isPremium
+        ? "border-accent/60 bg-emerald-500/5 shadow-emerald-950/20 hover:border-accent/80"
+        : "border-slate-700/60 bg-card/90 shadow-slate-950/20 hover:border-primary/60"
+    }`}>
       <div className="flex items-start gap-4">
         <div className="h-16 w-16 overflow-hidden rounded-xl border border-slate-700/60 bg-slate-800">
           {imageUrl ? (
@@ -39,6 +52,11 @@ export default function ProfessionalCard({
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="text-lg font-semibold text-white">{name}</h3>
+            {isPremium && (
+              <span className="rounded-full bg-accent/20 px-2 py-1 text-xs font-semibold text-accent">
+                Premium
+              </span>
+            )}
             <span className="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary">
               {category}
             </span>
@@ -46,6 +64,13 @@ export default function ProfessionalCard({
           {location ? (
             <p className="mt-1 text-xs text-slate-400">{location}</p>
           ) : null}
+          {isPremium && hasLicense && (
+            <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-accent/20 px-3 py-1">
+              <span className="text-xs font-semibold text-accent">
+                🎓 Matrícula: {licenseNumber}
+              </span>
+            </div>
+          )}
         </div>
       </div>
       <p className="mt-4 text-sm text-slate-300">{description}</p>

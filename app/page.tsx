@@ -15,7 +15,7 @@ export default async function Home({ searchParams }: HomePageProps) {
   const supabase = await createSupabaseServerClient();
   const { data: professionals, error } = await supabase
     .from("professionals")
-    .select("id, name, category, description, image_url, location, province, locality")
+    .select("id, name, category, description, image_url, location, province, locality, plan, license_number, is_featured")
     .order("is_featured", { ascending: false })
     .order("name", { ascending: true });
 

@@ -17,6 +17,9 @@ export type Professional = {
   location?: string | null;
   province?: string | null;
   locality?: string | null;
+  plan?: string | null;
+  license_number?: string | null;
+  is_featured?: boolean | null;
 };
 
 type ProfessionalsGridProps = {
@@ -129,6 +132,12 @@ export default function ProfessionalsGrid({
         normalizedCategoryValue.includes(normalizedQuery) ||
         normalizedDescription.includes(normalizedQuery);
       return matchesCategory && matchesProvince && matchesLocality && matchesQuery;
+    }).sort((a, b) => {
+      const aIsPremium = a.plan === "premium" || a.is_featured;
+      const bIsPremium = b.plan === "premium" || b.is_featured;
+      if (aIsPremium && !bIsPremium) return -1;
+      if (!aIsPremium && bIsPremium) return 1;
+      return a.name.localeCompare(b.name);
     });
   }, [professionals, query, category, province, locality]);
 
@@ -207,6 +216,9 @@ export default function ProfessionalsGrid({
               description={professional.description}
               imageUrl={professional.image_url}
               location={professional.location}
+              plan={professional.plan}
+              licenseNumber={professional.license_number}
+              isFeatured={professional.is_featured}
             />
           ))}
         </div>

@@ -61,9 +61,11 @@ export default function PlanFields({
         >
           <h4 className="text-sm font-semibold text-white">Premium</h4>
           <ul className="mt-2 space-y-1 text-xs text-slate-300">
-            <li>Perfil destacado</li>
-            <li>Botón WhatsApp</li>
+            <li>Perfil destacado en primeros lugares</li>
+            <li>Posicionamiento prioritario en búsquedas</li>
+            <li>Botón WhatsApp directo</li>
             <li>Redes sociales y galería</li>
+            <li>Mostrar matrícula profesional en card</li>
           </ul>
           <p className="mt-3 text-xs text-slate-300">
             Primer mes gratis. Luego $2000 ARS por mes.
