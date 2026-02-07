@@ -1,10 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import CategoryFilter from "./CategoryFilter";
 import ProfessionalCard from "./ProfessionalCard";
 import SearchBar from "./SearchBar";
 import { JUJUY_LOCALITIES, JUJUY_PROVINCE } from "@/lib/locations-jujuy";
+import { useCategoryFilter } from "./CategoryFilterContext";
 
 export type Professional = {
   id: string;
@@ -36,6 +38,43 @@ export default function ProfessionalsGrid({
   const [category, setCategory] = useState(initialCategory);
   const [province, setProvince] = useState(initialProvince);
   const [locality, setLocality] = useState(initialLocality);
+  const { selectedCategory, setSelectedCategory } = useCategoryFilter();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (initialCategory !== "Todas" && selectedCategory === "Todas") {
+      setSelectedCategory(initialCategory);
+    }
+  }, [initialCategory, selectedCategory, setSelectedCategory]);
+
+  useEffect(() => {
+    if (selectedCategory !== category) {
+      setCategory(selectedCategory);
+    }
+  }, [selectedCategory, category]);
+
+  const updateUrl = (next: {
+    q?: string;
+    category?: string;
+    province?: string;
+    locality?: string;
+  }) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (next.q) params.set("q", next.q);
+    else params.delete("q");
+    if (next.category && next.category !== "Todas") params.set("category", next.category);
+    else params.delete("category");
+    if (next.province && next.province !== "Todas") params.set("province", next.province);
+    else params.delete("province");
+    if (next.locality && next.locality !== "Todas") params.set("locality", next.locality);
+    else params.delete("locality");
+    const queryString = params.toString();
+    router.replace(queryString ? `${pathname}?${queryString}` : pathname, {
+      scroll: false,
+    });
+  };
 
   const normalizeText = (value: string) =>
     value
@@ -54,20 +93,32 @@ export default function ProfessionalsGrid({
   const filtered = useMemo(() => {
     const normalizedQuery = normalizeText(query.trim());
     const normalizedCategory = normalizeText(category);
-    const categoryToken =
-      normalizedCategory === "todas"
-        ? ""
-        : normalizedCategory.split(" ")[0].slice(0, 7);
+    const categoryVariants = (() => {
+      if (normalizedCategory === "todas") return [];
+      const variants = new Set<string>([normalizedCategory]);
+      if (normalizedCategory.endsWith("o")) {
+        variants.add(normalizedCategory.slice(0, -1) + "a");
+      }
+      if (normalizedCategory.endsWith("a")) {
+        variants.add(normalizedCategory.slice(0, -1) + "o");
+      }
+      if (normalizedCategory.endsWith("or")) {
+        variants.add(normalizedCategory + "a");
+      }
+      if (normalizedCategory.endsWith("ora")) {
+        variants.add(normalizedCategory.slice(0, -1));
+      }
+      return Array.from(variants);
+    })();
     return professionals.filter((professional) => {
       const normalizedName = normalizeText(professional.name);
       const normalizedCategoryValue = normalizeText(professional.category);
       const normalizedDescription = normalizeText(professional.description);
       const matchesCategory =
         category === "Todas" ||
-        (categoryToken.length > 0 &&
-          (normalizedCategoryValue.includes(categoryToken) ||
-            normalizedName.includes(categoryToken) ||
-            normalizedDescription.includes(categoryToken)));
+        categoryVariants.some((variant) =>
+          normalizedCategoryValue.includes(variant)
+        );
       const matchesProvince =
         province === "Todas" || professional.province === province;
       const matchesLocality =
@@ -84,11 +135,30 @@ export default function ProfessionalsGrid({
   return (
     <section className="space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <SearchBar value={query} onChange={setQuery} />
+        <SearchBar
+          value={query}
+          onChange={(value) => {
+            setQuery(value);
+            if (value.trim().length > 0 && category !== "Todas") {
+              setCategory("Todas");
+              setSelectedCategory("Todas");
+            }
+            updateUrl({
+              q: value.trim(),
+              category: value.trim().length > 0 ? "Todas" : category,
+              province,
+              locality,
+            });
+          }}
+        />
         <div className="flex flex-wrap gap-3">
           <select
             value={province}
-            onChange={(event) => setProvince(event.target.value)}
+            onChange={(event) => {
+              const value = event.target.value;
+              setProvince(value);
+              updateUrl({ q: query.trim(), category, province: value, locality });
+            }}
             className="rounded-full border border-slate-700/60 bg-slate-900/60 px-4 py-2 text-xs font-semibold text-slate-200 transition focus:border-primary/60 focus:outline-none"
           >
             <option value="Todas">Todas las provincias</option>
@@ -96,7 +166,11 @@ export default function ProfessionalsGrid({
           </select>
           <select
             value={locality}
-            onChange={(event) => setLocality(event.target.value)}
+            onChange={(event) => {
+              const value = event.target.value;
+              setLocality(value);
+              updateUrl({ q: query.trim(), category, province, locality: value });
+            }}
             className="rounded-full border border-slate-700/60 bg-slate-900/60 px-4 py-2 text-xs font-semibold text-slate-200 transition focus:border-primary/60 focus:outline-none"
           >
             <option value="Todas">Todas las localidades</option>
@@ -109,7 +183,11 @@ export default function ProfessionalsGrid({
           <CategoryFilter
             categories={categories}
             selected={category}
-            onChange={setCategory}
+            onChange={(value) => {
+              setCategory(value);
+              setSelectedCategory(value);
+              updateUrl({ q: query.trim(), category: value, province, locality });
+            }}
           />
         </div>
       </div>
