@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import ProfessionalCard from "./ProfessionalCard";
+import { getLocalitiesByDepartment } from "@/lib/locations-jujuy";
 import ProfesionalesSearchBar from "./ProfesionalesSearchBar";
 import CategoryListSidebar from "./CategoryListSidebar";
 import type { Professional } from "./ProfessionalsGrid";
@@ -17,6 +18,7 @@ type Props = {
   professionals: Professional[];
   error: boolean;
   initialEspecialidad: string;
+  initialDepartamento: string;
   initialLocalidad: string;
   initialCategoria: string;
 };
@@ -25,13 +27,17 @@ export default function ProfesionalesClient({
   professionals,
   error,
   initialEspecialidad,
+  initialDepartamento,
   initialLocalidad,
   initialCategoria,
 }: Props) {
   const filtered = useMemo(() => {
     const q = normalizeText(initialEspecialidad.trim());
+    const dept = initialDepartamento.trim();
     const loc = initialLocalidad.trim();
     const cat = initialCategoria;
+
+    const deptLocalities = dept ? new Set(getLocalitiesByDepartment(dept)) : null;
 
     return professionals.filter((p) => {
       const matchesEspecialidad =
@@ -39,7 +45,11 @@ export default function ProfesionalesClient({
         normalizeText(p.name).includes(q) ||
         normalizeText(p.category).includes(q) ||
         normalizeText(p.description ?? "").includes(q);
-      const matchesLocalidad = !loc || p.locality === loc;
+      const matchesLocalidad = loc
+        ? p.locality === loc
+        : deptLocalities
+          ? p.locality && deptLocalities.has(p.locality)
+          : true;
       const matchesCategoria =
         cat === "Todas" ||
         normalizeText(p.category) === normalizeText(cat) ||
@@ -55,24 +65,25 @@ export default function ProfesionalesClient({
   }, [
     professionals,
     initialEspecialidad,
+    initialDepartamento,
     initialLocalidad,
     initialCategoria,
   ]);
 
   return (
-    <main className="min-h-screen bg-base px-4 py-8 text-white sm:px-6">
+    <main className="min-h-screen bg-stone-50 px-4 py-8 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <header className="mb-8">
           <Link
             href="/"
-            className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-slate-400 transition hover:text-teal-400"
+            className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-stone-600 transition hover:text-teal-600"
           >
             ← Volver al inicio
           </Link>
-          <h1 className="mb-2 text-3xl font-bold text-white sm:text-4xl">
+          <h1 className="mb-2 text-3xl font-bold text-stone-800 sm:text-4xl">
             Profesionales
           </h1>
-          <p className="text-slate-400">
+          <p className="text-stone-600">
             Encontrá a los mejores especialistas en tu zona.
           </p>
         </header>
@@ -82,7 +93,7 @@ export default function ProfesionalesClient({
         </div>
 
         {error ? (
-          <div className="rounded-2xl border border-red-500/40 bg-red-500/10 p-6 text-sm text-red-200">
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
             Hubo un error cargando los profesionales. Intentá nuevamente.
           </div>
         ) : (
@@ -93,7 +104,7 @@ export default function ProfesionalesClient({
 
             <div className="min-w-0 flex-1">
               {filtered.length === 0 ? (
-                <div className="rounded-2xl border border-slate-700/60 bg-slate-800/60 p-12 text-center text-slate-300">
+                <div className="rounded-2xl border border-stone-200 bg-white p-12 text-center text-stone-600 shadow-sm">
                   No hay profesionales que coincidan con tu búsqueda.
                 </div>
               ) : (

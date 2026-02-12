@@ -2,7 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { directoryCategories } from "@/lib/categories";
-import { JUJUY_LOCALITIES, JUJUY_PROVINCE } from "@/lib/locations-jujuy";
+import { JUJUY_PROVINCE } from "@/lib/locations-jujuy";
+import LocalitySelect from "@/components/LocalitySelect";
 import ImageUploader from "@/components/ImageUploader";
 import PlanFields from "@/components/PlanFields";
 import { createSubscription, upsertProfessional } from "./actions";
@@ -151,31 +152,12 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
               className="rounded-2xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-primary/70 focus:outline-none"
             />
           </div>
-          <div className="grid gap-2">
-            <label className="text-sm text-slate-200">Provincia</label>
-            <select
-              name="province"
-              defaultValue={professional?.province ?? JUJUY_PROVINCE}
-              className="rounded-2xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-primary/70 focus:outline-none"
-            >
-              <option value={JUJUY_PROVINCE}>{JUJUY_PROVINCE}</option>
-            </select>
-          </div>
-          <div className="grid gap-2">
-            <label className="text-sm text-slate-200">Localidad</label>
-            <select
-              name="locality"
-              defaultValue={professional?.locality ?? ""}
-              className="rounded-2xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-primary/70 focus:outline-none"
-            >
-              <option value="">Seleccionar localidad</option>
-              {JUJUY_LOCALITIES.map((locality) => (
-                <option key={locality} value={locality}>
-                  {locality}
-                </option>
-              ))}
-            </select>
-          </div>
+          <input
+            type="hidden"
+            name="province"
+            value={JUJUY_PROVINCE}
+          />
+          <LocalitySelect defaultLocality={professional?.locality} />
           <div className="grid gap-2">
             <label className="text-sm text-slate-200">
               Contacto (teléfono o WhatsApp)

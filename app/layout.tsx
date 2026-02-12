@@ -59,7 +59,7 @@ export default async function RootLayout({
   return (
     <html lang="es" className="scroll-smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base text-slate-100 min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-stone-50 text-stone-800 min-h-screen`}
       >
         <CategoryFilterProvider>
           {children}

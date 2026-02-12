@@ -61,7 +61,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main className="min-h-screen text-white">
+      <main className="min-h-screen">
         <HeroSection />
         <ComoFuncionaSection />
         <ContactoSection />

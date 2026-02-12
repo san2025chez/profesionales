@@ -29,13 +29,13 @@ export default function ProfessionalCard({
   const hasLicense = licenseNumber && licenseNumber.trim() !== "";
 
   return (
-    <article className={`group rounded-2xl border p-5 shadow-lg transition hover:-translate-y-1 ${
+    <article className={`group rounded-2xl border p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md ${
       isPremium
-        ? "border-accent/60 bg-emerald-500/5 shadow-emerald-950/20 hover:border-accent/80"
-        : "border-slate-700/60 bg-card/90 shadow-slate-950/20 hover:border-primary/60"
+        ? "border-teal-200 bg-teal-50/50 hover:border-teal-300"
+        : "border-stone-200 bg-white hover:border-stone-300"
     }`}>
       <div className="flex items-start gap-4">
-        <div className="h-16 w-16 overflow-hidden rounded-xl border border-slate-700/60 bg-slate-800">
+        <div className="h-16 w-16 overflow-hidden rounded-xl border border-stone-200 bg-stone-100">
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -44,39 +44,39 @@ export default function ProfessionalCard({
               loading="lazy"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-xs text-slate-400">
+            <div className="flex h-full w-full items-center justify-center text-xs text-stone-500">
               Sin foto
             </div>
           )}
         </div>
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-lg font-semibold text-white">{name}</h3>
+            <h3 className="text-lg font-semibold text-stone-800">{name}</h3>
             {isPremium && (
-              <span className="rounded-full bg-accent/20 px-2 py-1 text-xs font-semibold text-accent">
+              <span className="rounded-full bg-teal-100 px-2 py-1 text-xs font-semibold text-teal-700">
                 Premium
               </span>
             )}
-            <span className="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary">
+            <span className="rounded-full bg-teal-100 px-3 py-1 text-xs font-medium text-teal-700">
               {category}
             </span>
           </div>
           {location ? (
-            <p className="mt-1 text-xs text-slate-400">{location}</p>
+            <p className="mt-1 text-xs text-stone-500">{location}</p>
           ) : null}
           {isPremium && hasLicense && (
-            <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-accent/20 px-3 py-1">
-              <span className="text-xs font-semibold text-accent">
+            <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-teal-100 px-3 py-1">
+              <span className="text-xs font-semibold text-teal-700">
                 🎓 Matrícula: {licenseNumber}
               </span>
             </div>
           )}
         </div>
       </div>
-      <p className="mt-4 text-sm text-slate-300">{description}</p>
+      <p className="mt-4 text-sm text-stone-600">{description}</p>
       <Link
         href={`/professionals/${id}`}
-        className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-accent transition group-hover:text-accent/90"
+        className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-teal-600 transition group-hover:text-teal-500"
       >
         Ver perfil
         <span aria-hidden="true">→</span>

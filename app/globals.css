@@ -4,16 +4,16 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  background: #0f172a;
-  color: #f8fafc;
+  background: #fafaf9;
+  color: #1c1917;
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #334155 #0f172a;
+  scrollbar-color: #a8a29e #fafaf9;
 }

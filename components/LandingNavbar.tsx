@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  HomeIcon,
   SearchIcon,
   UsersIcon,
   HelpCircleIcon,
@@ -13,7 +14,8 @@ import {
 import { useState } from "react";
 
 const LINKS = [
-  { href: "/#inicio", label: "Inicio", icon: SearchIcon },
+  { href: "/#inicio", label: "Inicio", icon: HomeIcon },
+  { href: "/#buscar", label: "Buscar", icon: SearchIcon },
   { href: "/#como-funciona", label: "Cómo funciona", icon: HelpCircleIcon },
   { href: "/profesionales", label: "Profesionales", icon: UsersIcon },
   { href: "/#contacto", label: "Contacto", icon: MailIcon },
@@ -35,11 +37,11 @@ export default function LandingNavbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200/10 bg-slate-900/95 backdrop-blur-md">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-stone-200/80 bg-white/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link
           href="/"
-          className="text-xl font-bold tracking-tight text-white"
+          className="text-xl font-bold tracking-tight text-stone-800"
         >
           Profesionales y Oficios
         </Link>
@@ -50,7 +52,7 @@ export default function LandingNavbar() {
               key={href}
               href={href}
               onClick={(e) => handleClick(e, href)}
-              className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800/60 hover:text-white"
+              className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-stone-600 transition hover:bg-stone-100 hover:text-stone-900"
             >
               <Icon className="h-4 w-4" />
               {label}
@@ -61,13 +63,13 @@ export default function LandingNavbar() {
         <div className="hidden items-center gap-2 md:flex">
           <Link
             href="/login"
-            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-300 transition hover:text-white"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-stone-600 transition hover:text-stone-900"
           >
             Iniciar sesión
           </Link>
           <Link
             href="/register"
-            className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-500"
+            className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-500 shadow-sm"
           >
             Registrarme
           </Link>
@@ -76,7 +78,7 @@ export default function LandingNavbar() {
         <button
           type="button"
           onClick={() => setOpen(!open)}
-          className="rounded-lg p-2 text-slate-300 hover:bg-slate-800 md:hidden"
+          className="rounded-lg p-2 text-stone-600 hover:bg-stone-100 md:hidden"
           aria-label="Menú"
         >
           {open ? <XIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
@@ -84,23 +86,23 @@ export default function LandingNavbar() {
       </div>
 
       {open && (
-        <div className="border-t border-slate-200/10 bg-slate-900 px-6 py-4 md:hidden">
+        <div className="border-t border-stone-200 bg-white px-6 py-4 md:hidden">
           <div className="flex flex-col gap-2">
             {LINKS.map(({ href, label, icon: Icon }) => (
               <Link
                 key={href}
                 href={href}
                 onClick={(e) => handleClick(e, href)}
-                className="flex items-center gap-2 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800"
+                className="flex items-center gap-2 rounded-lg px-4 py-3 text-stone-700 hover:bg-stone-100"
               >
                 <Icon className="h-4 w-4" />
                 {label}
               </Link>
             ))}
-            <div className="mt-4 flex gap-2 border-t border-slate-700 pt-4">
+            <div className="mt-4 flex gap-2 border-t border-stone-200 pt-4">
               <Link
                 href="/login"
-                className="flex-1 rounded-lg border border-slate-600 py-2.5 text-center text-sm font-medium text-slate-300"
+                className="flex-1 rounded-lg border border-stone-300 py-2.5 text-center text-sm font-medium text-stone-700"
               >
                 Iniciar sesión
               </Link>

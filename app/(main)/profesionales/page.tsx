@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 type ProfesionalesPageProps = {
   searchParams?: Promise<{
     especialidad?: string;
+    departamento?: string;
     localidad?: string;
     categoria?: string;
   }>;
@@ -37,6 +38,7 @@ export default async function ProfesionalesPage({
 
   const resolvedParams = searchParams ? await searchParams : {};
   const especialidad = resolvedParams.especialidad ?? "";
+  const departamento = resolvedParams.departamento ?? "";
   const localidad = resolvedParams.localidad ?? "";
   const categoria = resolvedParams.categoria ?? "Todas";
 
@@ -45,6 +47,7 @@ export default async function ProfesionalesPage({
       professionals={professionals ?? []}
       error={!!error}
       initialEspecialidad={especialidad}
+      initialDepartamento={departamento}
       initialLocalidad={localidad}
       initialCategoria={categoria}
     />
