@@ -68,13 +68,13 @@ export async function upsertProfessional(formData: FormData) {
     payload.image_url = image_url;
   }
 
+  payload.link_whatsapp = link_whatsapp || null;
+
   if (plan === "premium") {
-    payload.link_whatsapp = link_whatsapp || null;
     payload.redes_sociales = redes_sociales || null;
     payload.gallery_images = gallery_images || null;
     payload.license_number = license_number || null;
   } else {
-    payload.link_whatsapp = null;
     payload.redes_sociales = null;
     payload.gallery_images = null;
     payload.license_number = null;

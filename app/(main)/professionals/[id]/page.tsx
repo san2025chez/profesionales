@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
+import ShareProfileButtons from "@/components/ShareProfileButtons";
 
 type ProfessionalPageProps = {
   params: Promise<{ id: string }>;
@@ -12,7 +13,7 @@ export async function generateMetadata({ params }: ProfessionalPageProps): Promi
   const supabase = await createSupabaseServerClient();
   const { data: professional } = await supabase
     .from("professionals")
-    .select("name, category, description, locality, province")
+    .select("name, category, description, locality, province, image_url")
     .eq("id", resolvedParams.id)
     .maybeSingle();
 
@@ -22,16 +23,26 @@ export async function generateMetadata({ params }: ProfessionalPageProps): Promi
     };
   }
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://profesionalesoficios.vercel.app";
+  const profileUrl = `${siteUrl}/professionals/${resolvedParams.id}`;
   const location = professional.locality && professional.province
     ? `${professional.locality}, ${professional.province}`
     : "Jujuy";
 
   const title = `${professional.name} - ${professional.category} en ${location} | Profesionales y Oficios`;
   const description = `${professional.description || `${professional.name} es ${professional.category} en ${location}.`} Contacta con ${professional.name} para servicios profesionales en ${location}.`;
+  const ogImage =
+    professional.image_url?.startsWith("http")
+      ? professional.image_url
+      : professional.image_url
+        ? `${siteUrl}${professional.image_url.startsWith("/") ? "" : "/"}${professional.image_url}`
+        : `${siteUrl}/images/inicio.png`;
 
   return {
     title,
     description,
+    metadataBase: new URL(siteUrl),
+    alternates: { canonical: profileUrl },
     keywords: [
       `${professional.name.toLowerCase()} ${location.toLowerCase()}`,
       `${professional.category.toLowerCase()} ${location.toLowerCase()}`,
@@ -41,11 +52,23 @@ export async function generateMetadata({ params }: ProfessionalPageProps): Promi
       title,
       description,
       type: "profile",
+      url: profileUrl,
+      siteName: "Profesionales y Oficios",
+      locale: "es_AR",
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: `${professional.name} - ${professional.category}`,
+        },
+      ],
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title,
       description,
+      images: [ogImage],
     },
   };
 }
@@ -125,7 +148,7 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
       <main className="min-h-screen bg-base px-6 py-12 text-white">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-8">
         <Link
-          href="/"
+          href="/profesionales"
           className="text-sm font-semibold text-slate-300 transition hover:text-white"
         >
           ← Volver al listado
@@ -169,12 +192,14 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
                 Matrícula: {professional.license_number}
               </p>
             ) : null}
-            {rawContact ? (
+            {(rawContact || premiumWhatsapp) ? (
               <div className="flex flex-wrap items-center gap-3 text-sm text-slate-200">
-                <span className="rounded-full border border-slate-700/60 bg-slate-900/60 px-4 py-2">
-                  {rawContact}
-                </span>
-                {isPremium && premiumWhatsapp ? (
+                {rawContact ? (
+                  <span className="rounded-full border border-slate-700/60 bg-slate-900/60 px-4 py-2">
+                    {rawContact}
+                  </span>
+                ) : null}
+                {premiumWhatsapp ? (
                   <a
                     href={premiumWhatsapp}
                     target="_blank"
@@ -194,10 +219,15 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
                 ) : null}
               </div>
             ) : null}
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-4">
+              <ShareProfileButtons
+                url={`${siteUrl}/professionals/${professional.id}`}
+                title={`${professional.name} - ${professional.category} en ${locationParts.join(", ") || "Jujuy"}`}
+                description={professional.description || `${professional.name} es ${professional.category}. Contactá para servicios profesionales.`}
+              />
               <Link
                 href="/register"
-                className="rounded-full border border-slate-600/80 px-5 py-2 text-xs font-semibold text-slate-200 transition hover:border-primary/60 hover:text-white"
+                className="inline-flex w-fit rounded-full border border-slate-600/80 px-5 py-2 text-xs font-semibold text-slate-200 transition hover:border-primary/60 hover:text-white"
               >
                 Publicar perfil
               </Link>

@@ -49,7 +49,7 @@ export default function PlanFields({
           <ul className="mt-2 space-y-1 text-xs text-slate-300">
             <li>Perfil básico</li>
             <li>Sin destacado</li>
-            <li>Sin WhatsApp ni redes</li>
+            <li>Botón WhatsApp disponible</li>
           </ul>
         </div>
         <div
@@ -94,9 +94,8 @@ export default function PlanFields({
           <input
             name="link_whatsapp"
             defaultValue={defaultWhatsapp ?? ""}
-            disabled={!isPremium}
-            placeholder="https://wa.me/549..."
-            className="rounded-2xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-primary/70 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+            placeholder="https://wa.me/549... (opcional; si no lo usás, se usa el teléfono de Contacto)"
+            className="rounded-2xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-primary/70 focus:outline-none"
           />
         </div>
         <div className="grid gap-2">
