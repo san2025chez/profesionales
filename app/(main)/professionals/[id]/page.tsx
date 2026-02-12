@@ -1,10 +1,54 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 type ProfessionalPageProps = {
   params: Promise<{ id: string }>;
 };
+
+export async function generateMetadata({ params }: ProfessionalPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const supabase = await createSupabaseServerClient();
+  const { data: professional } = await supabase
+    .from("professionals")
+    .select("name, category, description, locality, province")
+    .eq("id", resolvedParams.id)
+    .maybeSingle();
+
+  if (!professional) {
+    return {
+      title: "Profesional no encontrado",
+    };
+  }
+
+  const location = professional.locality && professional.province
+    ? `${professional.locality}, ${professional.province}`
+    : "Jujuy";
+
+  const title = `${professional.name} - ${professional.category} en ${location} | Profesionales y Oficios`;
+  const description = `${professional.description || `${professional.name} es ${professional.category} en ${location}.`} Contacta con ${professional.name} para servicios profesionales en ${location}.`;
+
+  return {
+    title,
+    description,
+    keywords: [
+      `${professional.name.toLowerCase()} ${location.toLowerCase()}`,
+      `${professional.category.toLowerCase()} ${location.toLowerCase()}`,
+      `${professional.name.toLowerCase()} ${professional.category.toLowerCase()}`,
+    ],
+    openGraph: {
+      title,
+      description,
+      type: "profile",
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+  };
+}
 
 export default async function ProfessionalPage({ params }: ProfessionalPageProps) {
   const resolvedParams = await params;
@@ -35,8 +79,50 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
     .map((value: string) => value.trim())
     .filter(Boolean);
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://profesionalesoficios.vercel.app";
+  const locationParts = [
+    professional.locality,
+    professional.province,
+    professional.country,
+  ].filter(Boolean);
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: professional.name,
+    description: professional.description || `${professional.name} - ${professional.category}`,
+    image: professional.image_url || undefined,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: professional.locality || undefined,
+      addressRegion: professional.province || undefined,
+      addressCountry: professional.country || "AR",
+    },
+    areaServed: locationParts.length > 0
+      ? {
+          "@type": "City",
+          name: locationParts.join(", "),
+        }
+      : undefined,
+    serviceType: professional.category,
+    telephone: professional.contact || undefined,
+    url: `${siteUrl}/professionals/${professional.id}`,
+    ...(professional.license_number && {
+      identifier: {
+        "@type": "PropertyValue",
+        name: "Matrícula Profesional",
+        value: professional.license_number,
+      },
+    }),
+  };
+
   return (
-    <main className="min-h-screen bg-base px-6 py-12 text-white">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <main className="min-h-screen bg-base px-6 py-12 text-white">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-8">
         <Link
           href="/"
@@ -154,5 +240,6 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
         </section>
       </div>
     </main>
+    </>
   );
 }
