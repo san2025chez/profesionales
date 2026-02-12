@@ -29,10 +29,10 @@ export default function ProfessionalCard({
   const hasLicense = licenseNumber && licenseNumber.trim() !== "";
 
   return (
-    <article className={`group rounded-2xl border p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md ${
+    <article className={`group rounded-2xl border-2 p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md ${
       isPremium
-        ? "border-teal-200 bg-teal-50/50 hover:border-teal-300"
-        : "border-stone-200 bg-white hover:border-stone-300"
+        ? "border-teal-300 bg-teal-50/50 hover:border-teal-400"
+        : "border-stone-300 bg-white hover:border-teal-300"
     }`}>
       <div className="flex items-start gap-4">
         <div className="h-16 w-16 overflow-hidden rounded-xl border border-stone-200 bg-stone-100">

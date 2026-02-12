@@ -20,7 +20,7 @@ export default function ShareProfileButtons({
 
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-      <span className="text-xs font-medium uppercase tracking-wider text-slate-500 sm:text-sm sm:normal-case sm:tracking-normal sm:text-slate-400">
+      <span className="text-xs font-medium uppercase tracking-wider text-stone-600 sm:text-sm sm:normal-case sm:tracking-normal">
         Compartir perfil
       </span>
       <div className="grid grid-cols-2 gap-2 sm:contents">

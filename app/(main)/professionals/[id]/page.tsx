@@ -145,57 +145,75 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main className="min-h-screen bg-base px-6 py-12 text-white">
+      <main className="min-h-screen bg-stone-50 px-6 py-12">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-8">
         <Link
           href="/profesionales"
-          className="text-sm font-semibold text-slate-300 transition hover:text-white"
+          className="text-sm font-semibold text-stone-600 transition hover:text-teal-600"
         >
           ← Volver al listado
         </Link>
 
-        <section className="grid gap-6 rounded-3xl border border-slate-700/60 bg-card/80 p-8 shadow-xl shadow-slate-950/30 lg:grid-cols-[180px_1fr]">
-          <div className="h-40 w-40 overflow-hidden rounded-3xl border border-slate-700/60 bg-slate-800">
-            {professional.image_url ? (
-              <img
-                src={professional.image_url}
-                alt={`Foto de ${professional.name}`}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center text-xs text-slate-400">
-                Sin foto
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-4">
+        <section className={`overflow-hidden rounded-3xl border-2 bg-white shadow-md ${
+          isPremium ? "border-stone-200 border-l-4 border-l-teal-500" : "border-stone-300"
+        }`}>
+          {/* Encabezado: foto + datos básicos */}
+          <div className="grid gap-6 border-b-2 border-stone-200 bg-stone-50/30 p-6 lg:grid-cols-[180px_1fr] lg:p-8">
+            <div className="h-40 w-40 overflow-hidden rounded-2xl border-2 border-stone-300 bg-stone-100 shadow-sm">
+              {professional.image_url ? (
+                <img
+                  src={professional.image_url}
+                  alt={`Foto de ${professional.name}`}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-xs text-stone-500">
+                  Sin foto
+                </div>
+              )}
+            </div>
             <div className="space-y-2">
-              <p className="text-xs uppercase tracking-[0.3em] text-accent">
+              <p className="text-xs uppercase tracking-[0.3em] text-teal-600">
                 {professional.category}
               </p>
-              <h1 className="text-3xl font-semibold">{professional.name}</h1>
+              <h1 className="text-3xl font-semibold text-stone-800">{professional.name}</h1>
               {isPremium ? (
-                <span className="inline-flex w-fit rounded-full bg-accent/20 px-3 py-1 text-xs font-semibold text-accent">
+                <span className="inline-flex w-fit rounded-full bg-teal-100 px-3 py-1 text-xs font-semibold text-teal-700">
                   Premium
                 </span>
               ) : null}
               {professional.location ? (
-                <p className="text-sm text-slate-400">
-                  {professional.location}
+                <p className="text-sm text-stone-500">{professional.location}</p>
+              ) : null}
+            </div>
+          </div>
+
+          {/* Contenido principal en una caja con borde */}
+          <div className="space-y-0">
+            {/* Bloque Descripción */}
+            <div className="border-b-2 border-stone-200 p-6 lg:p-8">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-stone-500">
+                Descripción
+              </h2>
+              <p className="rounded-xl border-2 border-stone-200 bg-stone-50/50 p-4 text-sm leading-relaxed text-stone-700">
+                {professional.description || `${professional.name} es ${professional.category}.`}
+              </p>
+              {professional.license_number ? (
+                <p className="mt-3 rounded-lg border border-stone-200 bg-white px-4 py-2 text-xs text-stone-600">
+                  🎓 Matrícula: {professional.license_number}
                 </p>
               ) : null}
             </div>
-            <p className="text-sm text-slate-300">{professional.description}</p>
-            {professional.license_number ? (
-              <p className="text-xs text-slate-400">
-                Matrícula: {professional.license_number}
-              </p>
-            ) : null}
+
+            {/* Bloque Contacto */}
             {(rawContact || premiumWhatsapp) ? (
-              <div className="flex flex-wrap items-center gap-3 text-sm text-slate-200">
+            <div className="border-b-2 border-stone-200 p-6 lg:p-8">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-stone-500">
+                Contacto
+              </h2>
+              <div className="flex flex-wrap items-center gap-3 rounded-xl border-2 border-stone-200 bg-stone-50/50 p-4 text-sm text-stone-700">
                 {rawContact ? (
-                  <span className="rounded-full border border-slate-700/60 bg-slate-900/60 px-4 py-2">
+                  <span className="rounded-full border-2 border-stone-300 bg-white px-4 py-2">
                     {rawContact}
                   </span>
                 ) : null}
@@ -204,7 +222,7 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
                     href={premiumWhatsapp}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-xs font-semibold text-slate-900 transition hover:bg-accent/90"
+                    className="inline-flex items-center gap-2 rounded-full bg-teal-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-teal-500"
                   >
                     <svg
                       aria-hidden="true"
@@ -218,8 +236,15 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
                   </a>
                 ) : null}
               </div>
+            </div>
             ) : null}
-            <div className="flex flex-col gap-4">
+
+            {/* Bloque Compartir */}
+            <div className="border-b-2 border-stone-200 p-6 lg:p-8">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-stone-500">
+                Compartir perfil
+              </h2>
+            <div className="flex flex-col gap-4 rounded-xl border-2 border-stone-200 bg-stone-50/50 p-5">
               <ShareProfileButtons
                 url={`${siteUrl}/professionals/${professional.id}`}
                 title={`${professional.name} - ${professional.category} en ${locationParts.join(", ") || "Jujuy"}`}
@@ -227,34 +252,44 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
               />
               <Link
                 href="/register"
-                className="inline-flex w-fit rounded-full border border-slate-600/80 px-5 py-2 text-xs font-semibold text-slate-200 transition hover:border-primary/60 hover:text-white"
+                className="inline-flex w-fit rounded-full border-2 border-stone-300 px-5 py-2 text-xs font-semibold text-stone-700 transition hover:border-teal-500 hover:text-teal-600"
               >
                 Publicar perfil
               </Link>
             </div>
+            </div>
 
             {isPremium && socialLinks.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
+              <div className="border-b-2 border-stone-200 p-6 lg:p-8">
+                <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-stone-500">
+                  Redes sociales
+                </h2>
+              <div className="flex flex-wrap gap-2 rounded-xl border-2 border-stone-200 bg-stone-50/50 p-4">
                 {socialLinks.map((link: string) => (
                   <a
                     key={link}
                     href={link}
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-full border border-slate-700/60 bg-slate-900/60 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:border-primary/60"
+                    className="rounded-full border-2 border-stone-300 bg-white px-3 py-2 text-xs font-semibold text-stone-700 transition hover:border-teal-400 hover:bg-teal-50"
                   >
                     {link.replace(/^https?:\/\//, "")}
                   </a>
                 ))}
               </div>
+              </div>
             ) : null}
 
             {isPremium && galleryImages.length > 0 ? (
+              <div className="p-6 lg:p-8">
+                <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-stone-500">
+                  Galería
+                </h2>
               <div className="grid gap-3 sm:grid-cols-2">
                 {galleryImages.map((src: string) => (
                   <div
                     key={src}
-                    className="h-40 overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-800"
+                    className="h-40 overflow-hidden rounded-2xl border-2 border-stone-300 bg-stone-100 shadow-sm"
                   >
                     <img
                       src={src}
@@ -264,6 +299,7 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
                     />
                   </div>
                 ))}
+              </div>
               </div>
             ) : null}
           </div>
