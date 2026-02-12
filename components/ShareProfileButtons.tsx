@@ -19,28 +19,32 @@ export default function ShareProfileButtons({
   const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <span className="text-sm text-slate-400">Compartir perfil:</span>
-      <a
-        href={whatsappShareUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#20bd5a]"
-        aria-label="Compartir en WhatsApp"
-      >
-        <WhatsAppIcon className="h-4 w-4" />
-        WhatsApp
-      </a>
-      <a
-        href={facebookShareUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="inline-flex items-center gap-2 rounded-full bg-[#1877F2] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#166fe5]"
-        aria-label="Compartir en Facebook"
-      >
-        <FacebookIcon className="h-4 w-4" />
-        Facebook
-      </a>
+    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+      <span className="text-xs font-medium uppercase tracking-wider text-slate-500 sm:text-sm sm:normal-case sm:tracking-normal sm:text-slate-400">
+        Compartir perfil
+      </span>
+      <div className="grid grid-cols-2 gap-2 sm:contents">
+        <a
+          href={whatsappShareUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-sm font-semibold text-white transition active:scale-[0.98] hover:bg-[#20bd5a] sm:min-h-0 sm:rounded-full sm:py-2 sm:text-xs"
+          aria-label="Compartir en WhatsApp"
+        >
+          <WhatsAppIcon className="h-5 w-5 shrink-0 sm:h-4 sm:w-4" />
+          <span>WhatsApp</span>
+        </a>
+        <a
+          href={facebookShareUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-[#1877F2] px-4 py-3 text-sm font-semibold text-white transition active:scale-[0.98] hover:bg-[#166fe5] sm:min-h-0 sm:rounded-full sm:py-2 sm:text-xs"
+          aria-label="Compartir en Facebook"
+        >
+          <FacebookIcon className="h-5 w-5 shrink-0 sm:h-4 sm:w-4" />
+          <span>Facebook</span>
+        </a>
+      </div>
     </div>
   );
 }
