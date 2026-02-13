@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import ShareProfileButtons from "@/components/ShareProfileButtons";
+import ProfileBackBar from "@/components/ProfileBackBar";
 
 type ProfessionalPageProps = {
   params: Promise<{ id: string }>;
@@ -145,16 +146,14 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main className="min-h-screen bg-stone-50 px-6 py-12">
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-8">
-        <Link
-          href="/profesionales"
-          className="text-sm font-semibold text-stone-600 transition hover:text-teal-600"
-        >
-          ← Volver al listado
-        </Link>
+      <main className="min-h-screen bg-stone-50 px-4 py-6 sm:px-6 sm:py-8">
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
+        <ProfileBackBar
+          professionalName={professional.name}
+          category={professional.category}
+        />
 
-        <section className={`overflow-hidden rounded-3xl border-2 bg-white shadow-md ${
+        <section className={`overflow-hidden rounded-2xl border-2 bg-white shadow-md sm:rounded-3xl ${
           isPremium ? "border-stone-200 border-l-4 border-l-teal-500" : "border-stone-300"
         }`}>
           {/* Encabezado: foto + datos básicos */}

@@ -37,47 +37,49 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="min-h-screen bg-base px-6 py-12 text-white">
+    <main className="min-h-screen bg-stone-50 px-6 py-12">
       <div className="mx-auto w-full max-w-md space-y-8">
         <header className="space-y-3 text-center">
-          <p className="text-xs uppercase tracking-[0.3em] text-accent">
+          <p className="text-xs uppercase tracking-[0.3em] text-teal-600">
             Crea tu cuenta
           </p>
-          <h1 className="text-3xl font-semibold">Regístrate</h1>
-          <p className="text-sm text-slate-300">
+          <h1 className="text-3xl font-semibold text-stone-800">Regístrate</h1>
+          <p className="text-sm text-stone-600">
             Accede al dashboard y publica tu perfil profesional.
           </p>
         </header>
 
         <form
           onSubmit={handleSubmit}
-          className="space-y-5 rounded-3xl border border-slate-700/60 bg-card/80 p-8 shadow-xl shadow-slate-950/30"
+          className="space-y-5 rounded-3xl border-2 border-stone-200 bg-white p-8 shadow-md"
         >
-          <div className="rounded-2xl border border-slate-700/60 bg-slate-900/60 p-4 text-xs text-slate-300">
+          <div className="rounded-xl border border-stone-200 bg-stone-50 p-4 text-sm text-stone-600">
             Ingresa tu correo y crea una contraseña para registrarte.
           </div>
           <div className="space-y-2">
-            <label className="text-sm text-slate-200">Email</label>
+            <label className="text-sm font-medium text-stone-700">Email</label>
             <input
               name="email"
               type="email"
               required
-              className="w-full rounded-2xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-primary/70 focus:outline-none"
+              className="w-full rounded-xl border-2 border-stone-300 bg-white px-4 py-3 text-sm text-stone-800 placeholder:text-stone-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+              placeholder="tu@email.com"
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm text-slate-200">Contraseña</label>
+            <label className="text-sm font-medium text-stone-700">Contraseña</label>
             <input
               name="password"
               type="password"
               required
               minLength={6}
-              className="w-full rounded-2xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-white focus:border-primary/70 focus:outline-none"
+              className="w-full rounded-xl border-2 border-stone-300 bg-white px-4 py-3 text-sm text-stone-800 placeholder:text-stone-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+              placeholder="Mínimo 6 caracteres"
             />
           </div>
 
           {error ? (
-            <div className="rounded-2xl border border-red-500/40 bg-red-500/10 p-3 text-xs text-red-200">
+            <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
               {error}
             </div>
           ) : null}
@@ -85,17 +87,17 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:opacity-60"
+            className="w-full rounded-xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-teal-500 disabled:opacity-60"
           >
             {loading ? "Creando cuenta..." : "Registrarme"}
           </button>
         </form>
 
-        <p className="text-center text-sm text-slate-300">
+        <p className="text-center text-sm text-stone-600">
           ¿Ya tienes cuenta?{" "}
           <Link
             href="/login"
-            className="font-semibold text-accent transition hover:text-accent/90"
+            className="font-semibold text-teal-600 transition hover:text-teal-500"
           >
             Iniciar sesión
           </Link>
@@ -103,18 +105,18 @@ export default function RegisterPage() {
       </div>
 
       {success ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-6 py-10">
-          <div className="w-full max-w-md space-y-4 rounded-3xl border border-slate-700/60 bg-card/95 p-8 text-center shadow-2xl shadow-slate-950/60">
-            <h2 className="text-2xl font-semibold text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 px-6 py-10 backdrop-blur-sm">
+          <div className="w-full max-w-md space-y-4 rounded-3xl border-2 border-stone-200 bg-white p-8 text-center shadow-xl">
+            <h2 className="text-2xl font-semibold text-stone-800">
               Registro exitoso
             </h2>
-            <p className="text-sm text-slate-300">
+            <p className="text-sm text-stone-600">
               Verifica tu correo para confirmar la cuenta y luego inicia sesión.
             </p>
             <button
               type="button"
               onClick={() => router.push("/login")}
-              className="w-full rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary/90"
+              className="w-full rounded-xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-teal-500"
             >
               Ir a iniciar sesión
             </button>
