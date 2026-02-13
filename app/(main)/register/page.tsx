@@ -27,7 +27,19 @@ export default function RegisterPage() {
     });
 
     if (signUpError) {
-      setError(signUpError.message);
+      const msg = signUpError.message.toLowerCase();
+      if (
+        msg.includes("already registered") ||
+        msg.includes("user already") ||
+        msg.includes("ya está registrado") ||
+        signUpError.status === 422
+      ) {
+        setError(
+          "Este correo ya está registrado. Iniciá sesión o recuperá tu contraseña si no la recordás."
+        );
+      } else {
+        setError(signUpError.message);
+      }
       setLoading(false);
       return;
     }
@@ -79,8 +91,23 @@ export default function RegisterPage() {
           </div>
 
           {error ? (
-            <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-              {error}
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+              <p className="font-medium">{error}</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <Link
+                  href="/login"
+                  className="text-xs font-semibold text-teal-600 underline transition hover:text-teal-500"
+                >
+                  Iniciar sesión
+                </Link>
+                <span className="text-amber-600">·</span>
+                <Link
+                  href="/recuperar-contrasena"
+                  className="text-xs font-semibold text-teal-600 underline transition hover:text-teal-500"
+                >
+                  Recuperar contraseña
+                </Link>
+              </div>
             </div>
           ) : null}
 

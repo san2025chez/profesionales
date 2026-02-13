@@ -62,7 +62,15 @@ export default function LoginPage() {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-stone-700">Contraseña</label>
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-stone-700">Contraseña</label>
+              <Link
+                href="/recuperar-contrasena"
+                className="text-xs font-medium text-teal-600 transition hover:text-teal-500"
+              >
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </div>
             <input
               name="password"
               type="password"
